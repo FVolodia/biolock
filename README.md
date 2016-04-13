@@ -2,6 +2,9 @@
 
 Mobile device cover with embedded ECG sensor for biometric authentication and heart rate monitoring. 
 
+![cover](https://github.com/softserveinc-rnd/biolock/blob/master/images/cover.jpg)
+![applicatio screen](https://github.com/softserveinc-rnd/biolock/blob/master/images/phone_screenshot.jpg)
+
 # Business Description 
 
 TODO vmylko
@@ -19,11 +22,11 @@ TODO vmylko
 
 # Hardware Instructions
 
-![alt tag](https://github.com/softserveinc-rnd/biolock/blob/master/images/hardware.png)
+![hardware](https://github.com/softserveinc-rnd/biolock/blob/master/images/hardware.png)
 
 The system is based on BMD101 Bio-Signal SOC AFE. The measured ECG signal raw data transferred by Bluetooth module. User has to turn on the system and place the fingers onto the ECG electrodes.
 
 # Copyright Notice
 
-Copyright 2016 SoftServe Inc. or its affiliates. All Rights Reserved.
+Copyright (C) 2016 SoftServe Inc. or its affiliates. All Rights Reserved.
 Licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license (see the LICENSE file).
