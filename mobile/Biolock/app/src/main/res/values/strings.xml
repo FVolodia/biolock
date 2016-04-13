@@ -10,5 +10,5 @@
     <string name="bpm">bpm</string>
     <string name="authenticate">Authenticate with ECG</string>
     <string name="selectECGDevice">Select ECG device</string>
-    <string name="heartAniamtion">Heart animation</string>
+    <string name="heartAnimation">Heart animation</string>
 </resources>
