@@ -42,8 +42,6 @@ public class ECGVisualizationActivity extends AppCompatActivity
 
     public static ECGChartSurfaceView ecgChart;
 
-    private ArrayList<BluetoothDevice> btDeviceList = new ArrayList<>();
-
     private int mHeartRate = -1;
 
     @Override
@@ -145,7 +143,6 @@ public class ECGVisualizationActivity extends AppCompatActivity
     public void onDeviceFound(BluetoothDevice device) {
         if (device.getName() != null) {
             mFoundDeviceArrayList.add(device.getName());
-            btDeviceList.add(device);
             mFoundDeviceAdapter.notifyDataSetChanged();
         }
     }

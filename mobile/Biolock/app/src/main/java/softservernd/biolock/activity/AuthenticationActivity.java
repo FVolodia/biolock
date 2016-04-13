@@ -56,8 +56,6 @@ public class AuthenticationActivity extends AppCompatActivity
 
     private FileOutputStream mStreamECG;
 
-    private ArrayList<BluetoothDevice> mBTDeviceList = new ArrayList<>();
-
     private int mHeartRate = -1;
 
     private Button mAuthenticateButton;
@@ -171,7 +169,6 @@ public class AuthenticationActivity extends AppCompatActivity
     public void onDeviceFound(BluetoothDevice device) {
         if (device.getName() != null) {
             mFoundDeviceArrayList.add(device.getName());
-            mBTDeviceList.add(device);
             mFoundDeviceAdapter.notifyDataSetChanged();
         }
     }
