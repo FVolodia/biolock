@@ -105,7 +105,7 @@ public class ECGBluetoothReader {
                 System.arraycopy(mHRVData, 1, mHRVData, 0, 63);
                 mHRVData[63] = (float) heartRate;
 //                mDelegate.OnSetHRVData(mHRVData);
-                mDelegate.OnSetHeartRate(heartRate);
+                mDelegate.onSetHeartRate(heartRate);
 
                 break;
             case (byte) 0x80:
@@ -114,7 +114,7 @@ public class ECGBluetoothReader {
                 Log.d(TAG, "ecg = " + ecgValue);
                 System.arraycopy(mECGData, 1, mECGData, 0, 1023);
                 mECGData[1023] = (float) ecgValue * -1;
-                mDelegate.OnSetECGData(mECGData);
+                mDelegate.onSetECGData(mECGData);
                 break;
             default:
                 Log.d(TAG, "buffer" + Arrays.toString(dataBuffer.array()));

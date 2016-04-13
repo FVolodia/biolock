@@ -27,31 +27,31 @@ import softservernd.biolock.delegate.OnECGBluetoothManagerListener;
 
 /**
  * # # Copyright (C) 2016 SoftServe Inc., or its affiliates. All Rights Reserved.
- # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
- # Created By: omatv@softserveinc.com
- # Maintained By: tshchyb@softserveinc.com
+ * # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+ * # Created By: omatv@softserveinc.com
+ * # Maintained By: tshchyb@softserveinc.com
  */
 public class ECGBluetoothManager implements OnBluetoothConnectedListener, OnBluetoothDataReceiver {
     private static final String TAG = "ECGBluetoothManager";
-    private BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
     private final String BT_MODULE_NAME = "sichiray";
-    private final IntentFilter filter = new IntentFilter();
-    private ArrayList<String> foundDeviceArrayList = new ArrayList<>();
-    private ArrayList<BluetoothDevice> btDeviceList = new ArrayList<>();
-    private ArrayAdapter<String> foundDeviceAdapter;
+    private BluetoothAdapter mAdapter = BluetoothAdapter.getDefaultAdapter();
+    private final IntentFilter mFilter = new IntentFilter();
+    private ArrayList<String> mFoundDeviceArrayList = new ArrayList<>();
+    private ArrayList<BluetoothDevice> mBTDeviceList = new ArrayList<>();
+    private ArrayAdapter<String> mFoundDeviceAdapter;
 
     public ECGBluetoothManager() {
-        this.adapter = BluetoothAdapter.getDefaultAdapter();
+        this.mAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        mFilter.addAction(BluetoothDevice.ACTION_FOUND);
+        mFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        mFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
     }
 
     public void registerReceiver() {
-        CustomApplication.getInstance().getCurrentActivity().registerReceiver(mReceiver, filter);
-        foundDeviceAdapter = new ArrayAdapter<>(CustomApplication.getInstance().getCurrentActivity(),
-                android.R.layout.simple_list_item_1, foundDeviceArrayList);
+        CustomApplication.getInstance().getCurrentActivity().registerReceiver(mReceiver, mFilter);
+        mFoundDeviceAdapter = new ArrayAdapter<>(CustomApplication.getInstance().getCurrentActivity(),
+                android.R.layout.simple_list_item_1, mFoundDeviceArrayList);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ECGBluetoothManager implements OnBluetoothConnectedListener, OnBlue
     }
 
     public boolean isEnabled() {
-        return adapter.isEnabled();
+        return mAdapter.isEnabled();
     }
 
     public boolean enable(int requestCode) {
@@ -73,15 +73,15 @@ public class ECGBluetoothManager implements OnBluetoothConnectedListener, OnBlue
     public void startDiscovery() {
         if (isDiscovering())
             stopDiscovery();
-        adapter.startDiscovery();
+        mAdapter.startDiscovery();
     }
 
     public void stopDiscovery() {
-        adapter.cancelDiscovery();
+        mAdapter.cancelDiscovery();
     }
 
     public boolean isDiscovering() {
-        return adapter.isDiscovering();
+        return mAdapter.isDiscovering();
     }
 
     public boolean isDesiredDeviceName(String deviceName) {
@@ -98,17 +98,17 @@ public class ECGBluetoothManager implements OnBluetoothConnectedListener, OnBlue
             String action = intent.getAction();
 
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                ((OnECGBluetoothManagerListener)CustomApplication.getInstance().getCurrentActivity()).onDeviceDiscoveryStarted();
+                ((OnECGBluetoothManagerListener) CustomApplication.getInstance().getCurrentActivity()).onDeviceDiscoveryStarted();
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                ((OnECGBluetoothManagerListener)CustomApplication.getInstance().getCurrentActivity()).onDeviceDiscoveryFinished();
+                ((OnECGBluetoothManagerListener) CustomApplication.getInstance().getCurrentActivity()).onDeviceDiscoveryFinished();
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 //bluetooth device found
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                ((OnECGBluetoothManagerListener)CustomApplication.getInstance().getCurrentActivity()).onDeviceFound(device);
+                ((OnECGBluetoothManagerListener) CustomApplication.getInstance().getCurrentActivity()).onDeviceFound(device);
                 if (device.getName() != null) {
-                    foundDeviceArrayList.add(device.getName());
-                    btDeviceList.add(device);
-                    foundDeviceAdapter.notifyDataSetChanged();
+                    mFoundDeviceArrayList.add(device.getName());
+                    mBTDeviceList.add(device);
+                    mFoundDeviceAdapter.notifyDataSetChanged();
                 }
             }
         }
@@ -120,20 +120,20 @@ public class ECGBluetoothManager implements OnBluetoothConnectedListener, OnBlue
             InputStream input = bluetoothSocket.getInputStream();
             ECGBluetoothReader device = new ECGBluetoothReader(input, this);
             device.start();
-            ((OnECGBluetoothManagerListener)CustomApplication.getInstance().getCurrentActivity()).onDeviceConnected(bluetoothSocket);
+            ((OnECGBluetoothManagerListener) CustomApplication.getInstance().getCurrentActivity()).onDeviceConnected(bluetoothSocket);
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         }
     }
 
     @Override
-    public void OnSetECGData(float[] data) {
-        ((OnECGBluetoothManagerListener)CustomApplication.getInstance().getCurrentActivity()).onNewECGData(data);
+    public void onSetECGData(float[] data) {
+        ((OnECGBluetoothManagerListener) CustomApplication.getInstance().getCurrentActivity()).onNewECGData(data);
     }
 
     @Override
-    public void OnSetHeartRate(int heartRate) {
-        ((OnECGBluetoothManagerListener)CustomApplication.getInstance().getCurrentActivity()).onNewHeartRate(heartRate);
+    public void onSetHeartRate(int heartRate) {
+        ((OnECGBluetoothManagerListener) CustomApplication.getInstance().getCurrentActivity()).onNewHeartRate(heartRate);
     }
 
     public void createDialog() {
@@ -153,11 +153,11 @@ public class ECGBluetoothManager implements OnBluetoothConnectedListener, OnBlue
                 });
 
         builderSingle.setAdapter(
-                foundDeviceAdapter,
+                mFoundDeviceAdapter,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        final BluetoothDevice device = btDeviceList.get(which);
+                        final BluetoothDevice device = mBTDeviceList.get(which);
 
                         if (CustomApplication.getInstance().getBluetoothManager().isDesiredDeviceName(device.getName())) {
                             CustomApplication.getInstance().getBluetoothManager().stopDiscovery();

@@ -15,13 +15,11 @@ public class ECGChartSurfaceView extends GLSurfaceView {
 
     private ECGChartRenderer mChartRenderer;
     private float[] mDataPoints;
-
-    private boolean isUpdating = false;
+    private boolean mIsUpdating = false;
 
     public ECGChartSurfaceView(Context context) {
         super(context);
     }
-
     public ECGChartSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -43,14 +41,14 @@ public class ECGChartSurfaceView extends GLSurfaceView {
 
     public void setChartData(float[] datapoints) {
         if (datapoints.length > 0) {
-            isUpdating = true;
+            mIsUpdating = true;
             mDataPoints = datapoints.clone();
             float mMaxValue = getMax(datapoints);
             float mMinValue = getMin(datapoints);
             for (int i = 0; i < mDataPoints.length; i++) {
                 mDataPoints[i] = (((datapoints[i] - mMinValue) * (1.0f - (-1.0f)) / (mMaxValue - mMinValue)) + (-1));
             }
-            isUpdating = false;
+            mIsUpdating = false;
         }
     }
 
@@ -58,7 +56,7 @@ public class ECGChartSurfaceView extends GLSurfaceView {
         @Override
         public void run() {
             while (true) {
-                if (!isUpdating) {
+                if (!mIsUpdating) {
                     mChartRenderer.setChartData(mDataPoints);
                     requestRender();
                 }

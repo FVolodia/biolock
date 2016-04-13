@@ -12,19 +12,19 @@ import softservernd.biolock.tools.CSVFile;
 
 /**
  * # # Copyright (C) 2016 SoftServe Inc., or its affiliates. All Rights Reserved.
- # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
- # Created By: omatv@softserveinc.com
- # Maintained By: tshchyb@softserveinc.com
+ * # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+ * # Created By: omatv@softserveinc.com
+ * # Maintained By: tshchyb@softserveinc.com
  */
 public class ECGClassifier {
 
-    private float [][][] layerWeights = null;
+    private float[][][] mLayerWeights = null;
 
-    public void load(Context context, String []layerFiles) {
+    public void load(Context context, String[] layerFiles) {
         // Allocate memory n layers
-        layerWeights = new float[layerFiles.length][][];
+        mLayerWeights = new float[layerFiles.length][][];
         int layerIndex = 0;
-        for (String file: layerFiles) {
+        for (String file : layerFiles) {
             try {
                 InputStream stream = context.getAssets().open(file);
                 CSVFile cvsFile = new CSVFile(stream);
@@ -36,21 +36,21 @@ public class ECGClassifier {
 
                 // Fill matrix
                 for (int i = 0; i < rows.size(); ++i) {
-                    String []columns = (String[]) rows.get(i);
+                    String[] columns = (String[]) rows.get(i);
                     for (int j = 0; j < columns.length; ++j) {
                         matrix[i][j] = Float.parseFloat(columns[j]);
                     }
                 }
 
                 // Store weights
-                layerWeights[layerIndex++] = matrix;
+                mLayerWeights[layerIndex++] = matrix;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public int predict(float []input) {
+    public int predict(float[] input) {
         // Check if model have enough layers
         if (input.length <= 1)
             throw new RuntimeException("Not enough layers to work with (should be more than 1).");
@@ -58,8 +58,8 @@ public class ECGClassifier {
         float[] y = input.clone();
 
         // process input data with n-1 layers, last layer will be used differently
-        for (int i = 0; i < layerWeights.length - 1; i++) {
-            float[] yDot = multiply(addBias(y), layerWeights[i]);
+        for (int i = 0; i < mLayerWeights.length - 1; i++) {
+            float[] yDot = multiply(addBias(y), mLayerWeights[i]);
             float[] yRELU = activationRELU(yDot);
 
             y = new float[yRELU.length];
@@ -67,7 +67,7 @@ public class ECGClassifier {
         }
 
         // process data with last layer
-        float[] yDot = multiply(addBias(y), layerWeights[layerWeights.length - 1]);
+        float[] yDot = multiply(addBias(y), mLayerWeights[mLayerWeights.length - 1]);
         float[] ySoftMax = activationSoftMax(yDot);
 
         Log.e("SOFTMAX", "" + ySoftMax[0] + ", " + ySoftMax[1]);
@@ -98,7 +98,7 @@ public class ECGClassifier {
         if (x.length != rows)
             throw new RuntimeException("Illegal matrix dimensions.");
         float[] c = new float[columns];
-        for(int i = 0; i < columns; i++) {
+        for (int i = 0; i < columns; i++) {
             for (int k = 0; k < rows; k++) {
                 c[i] += x[k] * A[k][i];
             }
@@ -108,7 +108,7 @@ public class ECGClassifier {
 
     private static float[] activationRELU(float[] x) {
         for (int i = 0; i < x.length; i++) {
-            if(x[i] < 0) x[i] = 0;
+            if (x[i] < 0) x[i] = 0;
         }
         return x;
     }
@@ -126,7 +126,7 @@ public class ECGClassifier {
         return res;
     }
 
-    private static float max(float[] x){
+    private static float max(float[] x) {
         int indexOfMaximum = argMax(x);
         return x[indexOfMaximum];
     }
@@ -136,7 +136,7 @@ public class ECGClassifier {
         float maxValue = x[index];
 
         for (int i = 0; i < x.length; i++) {
-            if(x[i] > maxValue ) {
+            if (x[i] > maxValue) {
                 maxValue = x[i];
                 index = i;
             }

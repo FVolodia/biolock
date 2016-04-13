@@ -19,8 +19,8 @@ import java.util.ArrayList;
  */
 public class CSVFile {
     private static final String TAG = "CSVFile";
-    private InputStream inputStream = null;
-    private OutputStream outputStream = null;
+    private InputStream mInputStream = null;
+    private OutputStream mOutputStream = null;
 
     public static CSVFile createFile(String folder, String name) {
         File file = new File(folder, name + ".csv");
@@ -34,18 +34,18 @@ public class CSVFile {
     }
 
     public CSVFile(InputStream inputStream) {
-        this.inputStream = inputStream;
+        this.mInputStream = inputStream;
     }
 
     public CSVFile(OutputStream outputStream) {
-        this.outputStream = outputStream;
+        this.mOutputStream = outputStream;
     }
 
     public ArrayList readLines() {
-        if (inputStream == null)
+        if (mInputStream == null)
             return null;
         ArrayList<String[]> rows = new ArrayList<>();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(mInputStream));
         try {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
@@ -57,7 +57,7 @@ public class CSVFile {
         }
         finally {
             try {
-                inputStream.close();
+                mInputStream.close();
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage());
             }
@@ -66,18 +66,18 @@ public class CSVFile {
     }
 
     public boolean writeLines(String lines) {
-        if (outputStream == null)
+        if (mOutputStream == null)
             return false;
 
         try {
-            outputStream.write(lines.getBytes());
+            mOutputStream.write(lines.getBytes());
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
             return false;
         }
         finally {
             try {
-                outputStream.close();
+                mOutputStream.close();
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage());
             }

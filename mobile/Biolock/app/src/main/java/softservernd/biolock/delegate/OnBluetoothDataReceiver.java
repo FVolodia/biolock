@@ -7,7 +7,7 @@ package softservernd.biolock.delegate;
  # Maintained By: tshchyb@softserveinc.com
  */
 public interface OnBluetoothDataReceiver {
-    void OnSetECGData(float[] data);
+    void onSetECGData(float[] data);
 
-    void OnSetHeartRate(int heartRate);
+    void onSetHeartRate(int heartRate);
 }

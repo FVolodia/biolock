@@ -15,34 +15,33 @@ import softservernd.biolock.delegate.OnBluetoothConnectedListener;
 
 /**
  * # # Copyright (C) 2016 SoftServe Inc., or its affiliates. All Rights Reserved.
- # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
- # Created By: omatv@softserveinc.com
- # Maintained By: tshchyb@softserveinc.com
+ * # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+ * # Created By: omatv@softserveinc.com
+ * # Maintained By: tshchyb@softserveinc.com
  */
 public class ConnectBTDeviceTask extends AsyncTask<Void, Integer, Boolean> {
 
-    private final BluetoothDevice bluetoothDevice;
-    private int attempts;
+    private final BluetoothDevice mBluetoothDevice;
+    private int mAttempts;
 
-    private UUID myUUID;
+    private UUID mUUID;
     private final String UUID_STRING_WELL_KNOWN_SPP =
             "00001101-0000-1000-8000-00805F9B34FB";
 
     private Context mContext;
     private BluetoothSocket mBluetoothSocket;
-    private OnBluetoothConnectedListener delegate;
-
+    private OnBluetoothConnectedListener mDelegate;
     private ProgressDialog mProgressDialog;
 
-    public ConnectBTDeviceTask(Context context, BluetoothDevice device, OnBluetoothConnectedListener listener, int attempts) {
+    public ConnectBTDeviceTask(Context context, BluetoothDevice device, OnBluetoothConnectedListener listener, int mAttempts) {
         mContext = context;
-        delegate = listener;
+        mDelegate = listener;
         //using the well-known SPP UUID
-        myUUID = UUID.fromString(UUID_STRING_WELL_KNOWN_SPP);
-        this.attempts = attempts;
-        bluetoothDevice = device;
+        mUUID = UUID.fromString(UUID_STRING_WELL_KNOWN_SPP);
+        this.mAttempts = mAttempts;
+        mBluetoothDevice = device;
         try {
-            mBluetoothSocket = device.createRfcommSocketToServiceRecord(myUUID);
+            mBluetoothSocket = device.createRfcommSocketToServiceRecord(mUUID);
             Log.d("ConnectBTDeviceTask", "Bluetooth socket: " + mBluetoothSocket);
         } catch (IOException e) {
             Log.e("ConnectBTDeviceTask", "error during creating bluetooth socket", e);
@@ -52,7 +51,7 @@ public class ConnectBTDeviceTask extends AsyncTask<Void, Integer, Boolean> {
     @Override
     protected void onPreExecute() {
         mProgressDialog = new ProgressDialog(mContext);
-        mProgressDialog.setTitle("Connecting to " + bluetoothDevice.getName());
+        mProgressDialog.setTitle("Connecting to " + mBluetoothDevice.getName());
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
     }
@@ -83,11 +82,11 @@ public class ConnectBTDeviceTask extends AsyncTask<Void, Integer, Boolean> {
                 isConnected = true;
                 break;
             } catch (IOException e) {
-                Log.e("ConnectBTDeviceTask", "Can't connect to device " + bluetoothDevice.getName(), e);
+                Log.e("ConnectBTDeviceTask", "Can't connect to device " + mBluetoothDevice.getName(), e);
                 closeBluetoothSocket();
                 attempt++;
             }
-        } while (attempt < attempts);
+        } while (attempt < mAttempts);
         return isConnected;
     }
 
@@ -97,13 +96,13 @@ public class ConnectBTDeviceTask extends AsyncTask<Void, Integer, Boolean> {
         mProgressDialog.dismiss();
         if (isConnected) {
             Toast.makeText(mContext,
-                    "Successfully connected to " + bluetoothDevice.getName(),
+                    "Successfully connected to " + mBluetoothDevice.getName(),
                     Toast.LENGTH_SHORT).show();
-            Log.d("ConnectBTDeviceTask", "Connected to bluetooth device: " + bluetoothDevice.getName());
-            delegate.onBluetoothConnected(mBluetoothSocket);
+            Log.d("ConnectBTDeviceTask", "Connected to bluetooth device: " + mBluetoothDevice.getName());
+            mDelegate.onBluetoothConnected(mBluetoothSocket);
         } else {
             Toast.makeText(mContext,
-                    "Failed to connect to " + bluetoothDevice.getName(),
+                    "Failed to connect to " + mBluetoothDevice.getName(),
                     Toast.LENGTH_SHORT).show();
         }
     }

@@ -4,13 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -18,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import softservernd.biolock.CustomApplication;
@@ -38,10 +35,10 @@ public class ECGVisualizationActivity extends AppCompatActivity
     private static final int REQUEST_ENABLE_BT = 1;
     private static final String TAG = "VisualizationActivity";
 
-    private ArrayAdapter<String> foundDeviceAdapter;
+    private ArrayAdapter<String> mFoundDeviceAdapter;
 
     private TextView mHeartRateTextView;
-    private ArrayList<String> foundDeviceArrayList;
+    private ArrayList<String> mFoundDeviceArrayList;
 
     public static ECGChartSurfaceView ecgChart;
 
@@ -84,6 +81,8 @@ public class ECGVisualizationActivity extends AppCompatActivity
 //        TODO: if you want to write binary data to file, init file and add data from Device.
 //        initFiles();
         setup();
+
+        Toast.makeText(ECGVisualizationActivity.this, "Logged in as John Doe!", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -111,9 +110,9 @@ public class ECGVisualizationActivity extends AppCompatActivity
 
     private void setup() {
         CustomApplication.getInstance().getBluetoothManager().startDiscovery();
-        foundDeviceArrayList = new ArrayList<>();
-        foundDeviceAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, foundDeviceArrayList);
+        mFoundDeviceArrayList = new ArrayList<>();
+        mFoundDeviceAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, mFoundDeviceArrayList);
     }
 
     @Override
@@ -145,9 +144,9 @@ public class ECGVisualizationActivity extends AppCompatActivity
     @Override
     public void onDeviceFound(BluetoothDevice device) {
         if (device.getName() != null) {
-            foundDeviceArrayList.add(device.getName());
+            mFoundDeviceArrayList.add(device.getName());
             btDeviceList.add(device);
-            foundDeviceAdapter.notifyDataSetChanged();
+            mFoundDeviceAdapter.notifyDataSetChanged();
         }
     }
 

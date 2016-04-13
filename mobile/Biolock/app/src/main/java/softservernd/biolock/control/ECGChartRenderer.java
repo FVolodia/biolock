@@ -73,8 +73,8 @@ class ECGChartRenderer implements GLSurfaceView.Renderer {
 }
 
 class ECGSignalChart {
-    private float mChartData[];
     private final float CHART_POINT;
+    private float mChartData[];
     private int mWidth;
     private int mHeight;
     private FloatBuffer mVertexBuffer;

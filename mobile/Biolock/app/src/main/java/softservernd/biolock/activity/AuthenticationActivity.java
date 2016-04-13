@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -38,9 +37,9 @@ import softservernd.biolock.tools.CSVFile;
 
 /**
  * # # Copyright (C) 2016 SoftServe Inc., or its affiliates. All Rights Reserved.
- # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
- # Created By: omatv@softserveinc.com
- # Maintained By: tshchyb@softserveinc.com
+ * # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+ * # Created By: omatv@softserveinc.com
+ * # Maintained By: tshchyb@softserveinc.com
  */
 public class AuthenticationActivity extends AppCompatActivity
         implements View.OnClickListener, OnECGBluetoothManagerListener {
@@ -48,32 +47,29 @@ public class AuthenticationActivity extends AppCompatActivity
     private static final int REQUEST_ENABLE_BT = 1;
     private static final String TAG = "VisualizationActivity";
 
-    private ArrayAdapter<String> foundDeviceAdapter;
+    private ArrayAdapter<String> mFoundDeviceAdapter;
 
     private TextView mHeartRateTextView;
-    private ArrayList<String> foundDeviceArrayList;
+    private ArrayList<String> mFoundDeviceArrayList;
 
-    private static ECGChartSurfaceView ecgChart;
+    private static ECGChartSurfaceView mEcgChart;
 
     private FileOutputStream mStreamECG;
 
-    private ArrayList<BluetoothDevice> btDeviceList = new ArrayList<>();
+    private ArrayList<BluetoothDevice> mBTDeviceList = new ArrayList<>();
 
     private int mHeartRate = -1;
 
     private Button mAuthenticateButton;
 
-    private static final int PROGRESS = 0x1;
-
     private ProgressBar mProgress;
-    private int mProgressStatus = 0;
 
     private Handler mHandler = new Handler();
-    private ECGClassifier classifier = new ECGClassifier();
+    private ECGClassifier mClassifier = new ECGClassifier();
     private float[] mBuffer = null;
 
-    private int delay = 100; //milliseconds
-    private int i = 0;
+    private int mDelay = 500; //milliseconds
+    private int mProgressCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +81,8 @@ public class AuthenticationActivity extends AppCompatActivity
 
         mProgress = (ProgressBar) findViewById(R.id.progress);
 
-        ecgChart = (ECGChartSurfaceView) findViewById(R.id.ecgChartViewSurfaceView);
-        ecgChart.initializeWithSignalSize(1024);
+        mEcgChart = (ECGChartSurfaceView) findViewById(R.id.ecgChartViewSurfaceView);
+        mEcgChart.initializeWithSignalSize(1024);
 
         ((CustomApplication) getApplication()).setCurrentActivity(this);
 
@@ -110,30 +106,7 @@ public class AuthenticationActivity extends AppCompatActivity
         mAuthenticateButton.setOnClickListener(this);
 
         String[] layerList = loadLayersNames();
-        classifier.load(getBaseContext(), layerList);
-//        String []signalFiles = {
-//            "20160413_123337_ecg.csv",
-//                "20160413_123353_ecg.csv",
-//                "20160413_123436_ecg.csv",
-//                "20160413_123549_ecg.csv",
-//                "20160413_123606_ecg.csv",
-//                "20160413_123643_ecg.csv",
-//                "20160413_123703_ecg.csv",
-//                "20160413_123833_ecg.csv",
-//                "20160413_123851_ecg.csv",
-//                "20160413_123907_ecg.csv",
-//                "20160413_123923_ecg.csv"
-//        };
-//
-//        try {
-//            for (String str : signalFiles) {
-//                float[] signal = ECGTools.getFilteredSignal(readSignalFromFIle(getBaseContext(), str));
-//                int predict = classifier.predict(signal);
-//                Log.e("NNOOOOO USER", ""+ predict);
-//            }
-//        } catch (Exception e) {
-//
-//        }
+        mClassifier.load(getBaseContext(), layerList);
     }
 
     private String[] loadLayersNames() {
@@ -197,9 +170,9 @@ public class AuthenticationActivity extends AppCompatActivity
     @Override
     public void onDeviceFound(BluetoothDevice device) {
         if (device.getName() != null) {
-            foundDeviceArrayList.add(device.getName());
-            btDeviceList.add(device);
-            foundDeviceAdapter.notifyDataSetChanged();
+            mFoundDeviceArrayList.add(device.getName());
+            mBTDeviceList.add(device);
+            mFoundDeviceAdapter.notifyDataSetChanged();
         }
     }
 
@@ -210,7 +183,7 @@ public class AuthenticationActivity extends AppCompatActivity
 
     @Override
     public void onNewECGData(float[] data) {
-        ecgChart.setChartData(data);
+        mEcgChart.setChartData(data);
         mBuffer = data.clone();
     }
 
@@ -224,9 +197,9 @@ public class AuthenticationActivity extends AppCompatActivity
         CustomApplication.getInstance().getBluetoothManager().startDiscovery();
 
         //let's make a broadcast receiver to register our thing
-        foundDeviceArrayList = new ArrayList<>();
-        foundDeviceAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, foundDeviceArrayList);
+        mFoundDeviceArrayList = new ArrayList<>();
+        mFoundDeviceAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, mFoundDeviceArrayList);
 
         CustomApplication.getInstance().getBluetoothManager().createDialog();
     }
@@ -263,6 +236,7 @@ public class AuthenticationActivity extends AppCompatActivity
                 initializeSnackBar(v);
                 break;
             case R.id.authenticationButton:
+                Toast.makeText(AuthenticationActivity.this, "Authentication started!", Toast.LENGTH_SHORT).show();
                 authenticateUser();
                 break;
         }
@@ -285,18 +259,18 @@ public class AuthenticationActivity extends AppCompatActivity
         mHandler.postDelayed(new Runnable() {
             public void run() {
                 //do something
-                if (i < 100) {
-                    Log.e("asd", String.valueOf(i));
+                if (mProgressCount < 20) {
+                    Log.e("asd", String.valueOf(mProgressCount));
                     mProgress.setVisibility(View.VISIBLE);
                     mAuthenticateButton.setVisibility(View.GONE);
-                    i++;
-                    mProgress.setProgress(i);
-                    mHandler.postDelayed(this, delay);
+                    mProgressCount++;
+                    mProgress.setProgress(mProgressCount);
+                    mHandler.postDelayed(this, mDelay);
 
                     if (mBuffer != null) {
                         float[] signal = ECGTools.getFilteredSignal(mBuffer);
                         if (signal != null) {
-                            int result = classifier.predict(signal);
+                            int result = mClassifier.predict(signal);
                             if (result == 1) {
                                 mHandler.removeCallbacksAndMessages(null);
                                 Intent i = new Intent(AuthenticationActivity.this, ECGVisualizationActivity.class);
@@ -306,12 +280,13 @@ public class AuthenticationActivity extends AppCompatActivity
                         }
                     }
                 } else {
-                    i = 0;
+                    mProgressCount = 0;
                     mProgress.setVisibility(View.GONE);
                     mAuthenticateButton.setVisibility(View.VISIBLE);
+                    Toast.makeText(AuthenticationActivity.this, "Your ECG is not authorized please try again!", Toast.LENGTH_LONG).show();
                 }
             }
-        }, delay);
+        }, mDelay);
     }
 
     private float[] readSignalFromFIle(Context context, String fileName) throws Exception {

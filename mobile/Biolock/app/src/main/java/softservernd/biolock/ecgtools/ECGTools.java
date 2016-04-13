@@ -6,17 +6,17 @@ import java.util.List;
 
 /**
  * # # Copyright (C) 2016 SoftServe Inc., or its affiliates. All Rights Reserved.
- # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
- # Created By: omatv@softserveinc.com
- # Maintained By: tshchyb@softserveinc.com
+ * # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+ * # Created By: omatv@softserveinc.com
+ * # Maintained By: tshchyb@softserveinc.com
  */
 public class ECGTools {
 
     // Recommended ECG segment length with one R-peak
-    public static int segmentLength = 270;
+    public static int mSegmentLength = 270;
     // Length before R-peak that should be taken into ECG segment
-    public static int lengthFromBeginningToRPeak = 80;
-    public static float rPeakThreshold = 0.4f;
+    public static int mLengthFromBeginningToRPeak = 80;
+    public static float mRPeakThreshold = 0.4f;
     // kaiser FIR filter coefficients
     public static double[] b = {
             0.124843,
@@ -50,8 +50,8 @@ public class ECGTools {
 
     public static float[] getFilteredSignal(float[] signal) {
         float[] preprocessed = preprocess(signal);
-        ECGPeaks peaks = detectRPeaks(preprocessed, rPeakThreshold);
-        List<float[]> segments = segment(preprocessed, peaks, segmentLength);
+        ECGPeaks peaks = detectRPeaks(preprocessed, mRPeakThreshold);
+        List<float[]> segments = segment(preprocessed, peaks, mSegmentLength);
         return calculate(segments);
     }
 
@@ -147,7 +147,7 @@ public class ECGTools {
         int[] peakDistances = getDiff(peakIndexes);
 
         for (int i = 0; i < peakIndexes.length - 1; i++) {
-            int start = peakIndexes[i] - lengthFromBeginningToRPeak;
+            int start = peakIndexes[i] - mLengthFromBeginningToRPeak;
             int stop = start + Math.min(peakDistances[i], segmentLength);
             if (start < 0) continue;
 
