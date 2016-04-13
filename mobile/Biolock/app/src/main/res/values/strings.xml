@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Biolock</string>
+
+    <string name="title_activity_authentication_fullscreen">AuthenticationFullscreenActivity
+    </string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_authentication">AuthenticationActivity</string>
+    <string name="detectingHeartRate">Detecting heart rate</string>
+    <string name="bpm">bpm</string>
+    <string name="authenticate">Authenticate with ECG</string>
+    <string name="selectECGDevice">Select ECG device</string>
+    <string name="heartAniamtion">Heart animation</string>
+</resources>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+
+    <item android:duration="50" android:drawable="@drawable/heart_00000"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00001"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00002"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00003"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00004"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00005"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00006"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00007"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00008"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00009"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00010"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00011"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00012"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00013"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00014"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00015"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00016"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00017"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00018"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00019"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00020"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00021"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00022"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00023"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00024"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00025"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00026"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00027"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00028"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00029"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00030"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00031"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00032"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00033"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00034"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00035"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00036"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00037"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00038"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00039"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00040"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00041"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00042"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00043"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00044"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00045"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00046"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00047"/>-->
+    <item android:duration="50" android:drawable="@drawable/heart_00048"/>
+    <!--<item android:duration="50" android:drawable="@drawable/heart_00049"/>-->
+
+</animation-list>

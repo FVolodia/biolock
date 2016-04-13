@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".activity.ECGVisualizationActivity">
+
+    <softservernd.biolock.control.ECGChartSurfaceView
+        android:id="@+id/ecgChartViewSurfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_centerVertical="true" />
+
+    <ImageView
+        android:id="@+id/heartAnimationECGImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/animation_list_heart"
+
+
+        android:contentDescription="@string/heartAniamtion" />
+
+    <TextView
+        android:id="@+id/detectingHeartRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/heartRateTextView"
+        android:layout_centerHorizontal="true"
+        android:text="@string/detectingHeartRate"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/heartRateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/bpm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/heartRateTextView"
+        android:layout_centerHorizontal="true"
+        android:text="@string/bpm"
+        android:textColor="@android:color/white"
+        android:textSize="22sp" />
+
+</RelativeLayout>

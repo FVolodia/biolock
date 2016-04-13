@@ -19,7 +19,7 @@ TODO vmylko
 
 # Hardware Instructions
 
-![alt tag](https://github.com/softserveinc-rnd/biolock/images/hardware.png)
+![alt tag](https://github.com/softserveinc-rnd/biolock/blob/master/images/hardware.png)
 
 The system is based on BMD101 Bio-Signal SOC AFE. The measured ECG signal raw data transfered by Bluetooth module. 
 The user has to turn on the system and plase the finges across ECG electrods.   
