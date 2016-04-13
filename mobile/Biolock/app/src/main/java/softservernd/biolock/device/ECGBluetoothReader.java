@@ -15,7 +15,10 @@ import java.util.concurrent.TimeUnit;
 import softservernd.biolock.delegate.OnBluetoothDataReceiver;
 
 /**
- * Created by Oleksandr Matviishyn on 4/10/16.
+ * # # Copyright (C) 2016 SoftServe Inc., or its affiliates. All Rights Reserved.
+ # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+ # Created By: omatv@softserveinc.com
+ # Maintained By: tshchyb@softserveinc.com
  */
 public class ECGBluetoothReader {
 
