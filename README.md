@@ -7,8 +7,8 @@ Mobile device cover with embedded ECG sensor for biometric authentication and he
 
 # Business Description 
 
-Machines start to feel us. We are able to login into the tablet without entering any passwords or firmly pressing a finger to the spot. Just embed two electrodes into the frame, and the smart device will authenticate you by your ECG or bioimpedance, when you touch the frame. Today it is security or wellbeing application, tomorrow it will be emotional intelligence by machines.
-For 2016 it is beginning of the wide adoption of invisible interfaces, besides speech. We are dispensing with type, click, touch. With further miniaturization of sensors and power efficiency, we will be able to make our various devices & cloths really smarter. Right now bimetric authentication by ECG could be used for kiosk solutions, as second factor, or even as primary. Just ECG & HR monitoring could be used by quantified-self enthusiasts on daily basis.
+Machines start to feel us. We are able to login into the mobile device without entering any passwords or firmly pressing a finger to the spot. Just embed two electrodes into the frame, and the smart device will authenticate you by your ECG or bioimpedance, when you touch the frame. Today it is security or wellbeing application, tomorrow it will be emotional intelligence by machines.
+For 2016 it is beginning of the wide adoption of invisible interfaces, besides speech. We are dispensing with type, click, touch. With further miniaturization of sensors and power efficiency, we will be able to make our various devices & cloths really smarter. Right now biometric authentication by ECG could be used for kiosk solutions, as second factor, or even as primary. Just ECG & HR monitoring could be used by quantified-self enthusiasts on daily basis.
 
 # Parts List
 
