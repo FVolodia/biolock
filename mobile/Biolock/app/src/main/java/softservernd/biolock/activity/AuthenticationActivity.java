@@ -289,12 +289,14 @@ public class AuthenticationActivity extends AppCompatActivity
 
                     if (mBuffer != null) {
                         float[] signal = ECGTools.getFilteredSignal(mBuffer);
-                        int result = classifier.predict(signal);
-                        if (result == 1) {
-                            mHandler.removeCallbacksAndMessages(null);
-                            Intent i = new Intent(AuthenticationActivity.this, ECGVisualizationActivity.class);
-                            startActivity(i);
-                            Log.i(TAG, "LOGGED IN");
+                        if (signal != null) {
+                            int result = classifier.predict(signal);
+                            if (result == 1) {
+                                mHandler.removeCallbacksAndMessages(null);
+                                Intent i = new Intent(AuthenticationActivity.this, ECGVisualizationActivity.class);
+                                startActivity(i);
+                                Log.i(TAG, "LOGGED IN");
+                            }
                         }
                     }
                 } else {

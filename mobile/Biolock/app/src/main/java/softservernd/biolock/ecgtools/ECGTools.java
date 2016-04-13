@@ -154,7 +154,8 @@ public class ECGTools {
     }
 
     private static float[] getSegmentMean(List<float[]> ecg) {
-        if (ecg.size() == 0) return new float[1];
+        if (ecg.size() == 0) return null;
+
         float[] resultArray = new float[ecg.get(0).length];
         Arrays.fill(resultArray, Float.MAX_VALUE);
 
@@ -170,6 +171,8 @@ public class ECGTools {
     private static float[] calculate(List<float[]> ecg) {
 
         float[] segmentMean = getSegmentMean(ecg);
+        if (segmentMean == null) return null;
+
         float normGain = (getMax(segmentMean) - getMin(segmentMean)) / 2;
         for (int i = 0; i < segmentMean.length; i++) {
             segmentMean[i] /= normGain;
