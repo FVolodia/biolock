@@ -26,7 +26,10 @@ import softservernd.biolock.delegate.OnECGBluetoothManagerListener;
 
 
 /**
- * Created by tarasshchybovyk on 4/12/16.
+ * # # Copyright (C) 2016 SoftServe Inc., or its affiliates. All Rights Reserved.
+ # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+ # Created By: omatv@softserveinc.com
+ # Maintained By: tshchyb@softserveinc.com
  */
 public class ECGBluetoothManager implements OnBluetoothConnectedListener, OnBluetoothDataReceiver {
     private static final String TAG = "ECGBluetoothManager";
