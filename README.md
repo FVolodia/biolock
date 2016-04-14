@@ -2,6 +2,7 @@
 
 Mobile device cover with embedded ECG sensor for biometric authentication and heart rate monitoring. 
 
+![tablet](https://github.com/softserveinc-rnd/biolock/blob/master/images/samsungtab.jpg)
 ![cover](https://github.com/softserveinc-rnd/biolock/blob/master/images/cover.jpg)
 ![applicatio screen](https://github.com/softserveinc-rnd/biolock/blob/master/images/phone_screenshot.jpg)
 
