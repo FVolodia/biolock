@@ -24,6 +24,10 @@ public class ECGChartSurfaceView extends GLSurfaceView {
         super(context, attrs);
     }
 
+    public void setRGB(float[] rgb) {
+        mChartRenderer.setChartColor(rgb);
+    }
+
     public void initializeWithSignalSize(int ECGSignalSize) {
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         this.setZOrderOnTop(true); //necessary

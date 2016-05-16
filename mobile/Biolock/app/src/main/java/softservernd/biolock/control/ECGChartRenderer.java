@@ -28,6 +28,10 @@ class ECGChartRenderer implements GLSurfaceView.Renderer {
         mECGLineChart = new ECGSignalChart(ECGSignalSize);
     }
 
+    public void setChartColor(float[] rgb) {
+        mECGLineChart.rgb = rgb;
+    }
+
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
@@ -80,6 +84,8 @@ class ECGSignalChart {
     private FloatBuffer mVertexBuffer;
     private final float[] mVertices;
 
+    public float[] rgb = {0.21f, 0.86f, 0.68f};
+
     public ECGSignalChart(int ecgSignalSize) {
         mChartData = new float[ecgSignalSize];
         CHART_POINT = ecgSignalSize;
@@ -104,7 +110,8 @@ class ECGSignalChart {
         // bind the previously generated texture
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         // set the color for the triangle
-        gl.glColor4f(0.21f, 0.86f, 0.68f, 1f);
+//        gl.glColor4f(0.21f, 0.86f, 0.68f, 1f);
+        gl.glColor4f(rgb[0], rgb[1], rgb[2], 1f);
         // Point to our vertex buffer
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
         // Line width

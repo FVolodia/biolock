@@ -54,6 +54,9 @@ public class AuthenticationActivity extends AppCompatActivity
 
     private static ECGChartSurfaceView mEcgChart;
 
+    private static ECGChartSurfaceView mECGKaiser;
+    private static ECGChartSurfaceView mECGButter;
+
     private FileOutputStream mStreamECG;
 
     private int mHeartRate = -1;
@@ -81,6 +84,14 @@ public class AuthenticationActivity extends AppCompatActivity
 
         mEcgChart = (ECGChartSurfaceView) findViewById(R.id.ecgChartViewSurfaceView);
         mEcgChart.initializeWithSignalSize(1024);
+
+        mECGKaiser = (ECGChartSurfaceView) findViewById(R.id.ecgChartViewSurfaceKaiserView);
+        mECGKaiser.initializeWithSignalSize(1024);
+        mECGKaiser.setRGB(new float[]{1.0f, 0.0f, 0.0f});
+
+        mECGButter = (ECGChartSurfaceView) findViewById(R.id.ecgChartViewSurfaceButterView);
+        mECGButter.initializeWithSignalSize(1024);
+        mECGButter.setRGB(new float[]{0.0f, 1.0f, 0.0f});
 
         ((CustomApplication) getApplication()).setCurrentActivity(this);
 
@@ -181,6 +192,12 @@ public class AuthenticationActivity extends AppCompatActivity
     @Override
     public void onNewECGData(float[] data) {
         mEcgChart.setChartData(data);
+        float[] kaiser = ECGTools.filter(data, ECGTools.b);
+        mECGKaiser.setChartData(kaiser);
+
+        float[] butter = ECGTools.iirFilter(data);
+        mECGButter.setChartData(butter);
+
         mBuffer = data.clone();
     }
 

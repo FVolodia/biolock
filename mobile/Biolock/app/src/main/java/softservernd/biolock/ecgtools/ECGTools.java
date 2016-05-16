@@ -1,8 +1,15 @@
 package softservernd.biolock.ecgtools;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import biz.source_code.dsp.filter.FilterPassType;
+import biz.source_code.dsp.filter.IirFilter;
+import biz.source_code.dsp.filter.IirFilterCoefficients;
+import biz.source_code.dsp.filter.IirFilterDesignExstrom;
 
 /**
  * # # Copyright (C) 2016 SoftServe Inc., or its affiliates. All Rights Reserved.
@@ -10,6 +17,19 @@ import java.util.List;
  * # Created By: omatv@softserveinc.com
  * # Maintained By: tshchyb@softserveinc.com
  */
+
+class Filter {
+    public Filter() {
+        double fs = 277;
+        double fcf1 = 4.0/fs;
+        double fcf2 = 35.0/fs;
+        IirFilterCoefficients iirFilterCoefficients = IirFilterDesignExstrom.design(FilterPassType.bandpass, 4, fcf1, fcf2);
+        filter = new IirFilter(iirFilterCoefficients);
+    }
+
+    IirFilter filter;
+}
+
 public class ECGTools {
 
     // Recommended ECG segment length with one R-peak
@@ -17,6 +37,9 @@ public class ECGTools {
     // Length before R-peak that should be taken into ECG segment
     public static int mLengthFromBeginningToRPeak = 80;
     public static float mRPeakThreshold = 0.4f;
+
+    public static Filter filter = new Filter();
+
     // kaiser FIR filter coefficients
     public static double[] b = {
             0.124843,
@@ -55,6 +78,16 @@ public class ECGTools {
         return calculate(segments);
     }
 
+    public static float[] iirFilter(float[] signal) {
+        float[] filteredData = new float[signal.length];
+
+        for (int i = 0; i < signal.length; ++i) {
+            filteredData[i] = (float)filter.filter.step((double)signal[i]);
+        }
+
+        return filteredData;
+    }
+
 
     public static float[] filter(float[] signal, double[] b) {
         float[] filterData = new float[signal.length];
@@ -91,7 +124,13 @@ public class ECGTools {
     }
 
     public static float[] preprocess(float[] signal) {
-        return normalize(filter(signal, b));
+        float[] filtered = iirFilter(signal);
+        float[] filteredOld = filter(signal, b);
+
+        for (int i = 0; i < filtered.length; ++i) {
+            Log.e("Filtered", Float.toString(signal[i]) + " -> " + Float.toString(filtered[i]) + " Kaiser: " + Float.toString(filteredOld[i]));
+        }
+        return normalize(filteredOld);
     }
 
     public static ECGPeaks detectRPeaks(float[] signal, float threshold) {
