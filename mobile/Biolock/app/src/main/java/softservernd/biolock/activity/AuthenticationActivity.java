@@ -6,12 +6,17 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -22,10 +27,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import softservernd.biolock.CustomApplication;
 import softservernd.biolock.R;
@@ -45,6 +53,7 @@ public class AuthenticationActivity extends AppCompatActivity
         implements View.OnClickListener, OnECGBluetoothManagerListener {
 
     private static final int REQUEST_ENABLE_BT = 1;
+    private static final int REQUEST_WRITE_STORAGE = 112;
     private static final String TAG = "VisualizationActivity";
 
     private ArrayAdapter<String> mFoundDeviceAdapter;
@@ -105,9 +114,10 @@ public class AuthenticationActivity extends AppCompatActivity
             int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
 
             permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
+            permissionCheck += this.checkSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE");
             if (permissionCheck != 0) {
 
-                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001); //Any number
+                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1001); //Any number
             }
         }
 
@@ -139,7 +149,14 @@ public class AuthenticationActivity extends AppCompatActivity
         if (!CustomApplication.getInstance().getBluetoothManager().isEnabled())
             CustomApplication.getInstance().getBluetoothManager().enable(REQUEST_ENABLE_BT);
 //        TODO: if you want to write binary data to file, init file and add data from Device.
-//        initFiles();
+        boolean hasPermission = (ContextCompat.checkSelfPermission(AuthenticationActivity.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        if (!hasPermission) {
+            ActivityCompat.requestPermissions(AuthenticationActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_WRITE_STORAGE);
+        }
+        initFiles();
         setup();
     }
 
@@ -232,6 +249,41 @@ public class AuthenticationActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        closeFile();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode)
+        {
+            case REQUEST_WRITE_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    //reload my activity with permission granted or use the features what required the permission
+                } else
+                {
+                    Toast.makeText(AuthenticationActivity.this, "The app was not allowed to write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    private void initFiles() {
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        File rootF = new File(Environment.getExternalStorageDirectory(), "Biolock");
+        rootF.mkdir();
+        File rootFolder = new File(rootF, df.format(new Date()));
+        File folderECG = new File(Environment.getExternalStorageDirectory(), "Biolock ECG");
+        rootFolder.mkdir();
+
+//        mEcgFile mEcgFile= new File(rootFolder, df.format(new Date()) + "_ecg.bin");
+//        try {
+//            mEcgFile.createNewFile();
+//            mStreamECG = new FileOutputStream(mEcgFile);
+//        } catch (IOException e) {
+//            Log.e(TAG, "error during initing files. " + e);
+//        }
     }
 
     private void closeFile() {
