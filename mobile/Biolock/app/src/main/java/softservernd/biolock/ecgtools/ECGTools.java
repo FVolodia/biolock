@@ -75,7 +75,7 @@ public class ECGTools {
         float[] preprocessed = preprocess(signal);
         ECGPeaks peaks = detectRPeaks(preprocessed, mRPeakThreshold);
         List<float[]> segments = segment(preprocessed, peaks, mSegmentLength);
-        return calculate(segments.subList(0, chunks));
+        return calculate(segments);
     }
 
     public static float[] iirFilter(float[] signal) {

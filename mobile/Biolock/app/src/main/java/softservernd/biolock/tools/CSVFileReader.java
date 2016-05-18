@@ -17,28 +17,12 @@ import java.util.ArrayList;
  # Created By: omatv@softserveinc.com
  # Maintained By: tshchyb@softserveinc.com
  */
-public class CSVFile {
-    private static final String TAG = "CSVFile";
+public class CSVFileReader {
+    private static final String TAG = "CSVFileReader";
     private InputStream mInputStream = null;
-    private OutputStream mOutputStream = null;
 
-    public static CSVFile createFile(String folder, String name) {
-        File file = new File(folder, name + ".csv");
-        try {
-            OutputStream stream = new FileOutputStream(file);
-            return new CSVFile(stream);
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
-        return null;
-    }
-
-    public CSVFile(InputStream inputStream) {
+    public CSVFileReader(InputStream inputStream) {
         this.mInputStream = inputStream;
-    }
-
-    public CSVFile(OutputStream outputStream) {
-        this.mOutputStream = outputStream;
     }
 
     public ArrayList readLines() {
@@ -63,19 +47,5 @@ public class CSVFile {
             }
         }
         return rows;
-    }
-
-    public boolean writeLine(String line) {
-        if (mOutputStream == null)
-            return false;
-
-        try {
-            mOutputStream.write(line.getBytes());
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-            return false;
-        }
-
-        return true;
     }
 }

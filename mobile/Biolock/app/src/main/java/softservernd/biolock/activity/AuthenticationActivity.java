@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,6 +18,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -45,7 +47,7 @@ import softservernd.biolock.control.ECGChartSurfaceView;
 import softservernd.biolock.delegate.OnECGBluetoothManagerListener;
 import softservernd.biolock.dnn.ECGClassifier;
 import softservernd.biolock.ecgtools.ECGTools;
-import softservernd.biolock.tools.CSVFile;
+import softservernd.biolock.tools.CSVFileReader;
 
 /**
  * # # Copyright (C) 2016 SoftServe Inc., or its affiliates. All Rights Reserved.
@@ -66,9 +68,6 @@ public class AuthenticationActivity extends AppCompatActivity
     private ArrayList<String> mFoundDeviceArrayList;
 
     private static ECGChartSurfaceView mEcgChart;
-
-    private static ECGChartSurfaceView mECGKaiser;
-    private static ECGChartSurfaceView mECGButter;
 
     private File enrollmentFolder;
     private FileOutputStream mStreamECG;
@@ -98,14 +97,6 @@ public class AuthenticationActivity extends AppCompatActivity
 
         mEcgChart = (ECGChartSurfaceView) findViewById(R.id.ecgChartViewSurfaceView);
         mEcgChart.initializeWithSignalSize(1024);
-
-        mECGKaiser = (ECGChartSurfaceView) findViewById(R.id.ecgChartViewSurfaceKaiserView);
-        mECGKaiser.initializeWithSignalSize(1024);
-        mECGKaiser.setRGB(new float[]{1.0f, 0.0f, 0.0f});
-
-        mECGButter = (ECGChartSurfaceView) findViewById(R.id.ecgChartViewSurfaceButterView);
-        mECGButter.initializeWithSignalSize(1024);
-        mECGButter.setRGB(new float[]{0.0f, 1.0f, 0.0f});
 
         ((CustomApplication) getApplication()).setCurrentActivity(this);
 
@@ -215,18 +206,19 @@ public class AuthenticationActivity extends AppCompatActivity
     public void onNewECGData(float[] data) {
         mEcgChart.setChartData(data);
 
-        float[] kaiser = ECGTools.filter(data, ECGTools.b);
-        mECGKaiser.setChartData(kaiser);
-
-        float[] butter = ECGTools.iirFilter(data);
-        mECGButter.setChartData(butter);
-
         mBuffer = data.clone();
 
         if (mStreamECG != null) {
-            float[] signal = ECGTools.getFilteredSignal(mBuffer, 10);
-            CSVFile file = new CSVFile(mStreamECG);
-            file.writeLine(Arrays.toString(signal));
+            float[] signal = ECGTools.getFilteredSignal(mBuffer, 5);
+
+            String csvLine = Arrays.toString(signal);
+            csvLine = csvLine.substring(1,csvLine.length()-1) + "\n";
+
+            try {
+                mStreamECG.write(csvLine.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -294,7 +286,11 @@ public class AuthenticationActivity extends AppCompatActivity
 
     private void closeFile() {
         try {
-            if (mStreamECG != null) mStreamECG.close();
+            if (mStreamECG != null) {
+                mStreamECG.flush();
+                mStreamECG.close();
+                Log.d(TAG, "ECG stored");
+            }
             mStreamECG = null;
         } catch (IOException e) {
             Log.e(TAG, "Error during closing stream. " + e);
@@ -339,7 +335,7 @@ public class AuthenticationActivity extends AppCompatActivity
                                             public void run() {
                                                 closeFile();
                                             }
-                                        }, 10000);
+                                        }, 5000);
                                     }
                                 }, 3000);
                             }
@@ -392,7 +388,7 @@ public class AuthenticationActivity extends AppCompatActivity
 
     private float[] readSignalFromFIle(Context context, String fileName) throws Exception {
         InputStream stream = context.getAssets().open(fileName);
-        CSVFile cvsFile = new CSVFile(stream);
+        CSVFileReader cvsFile = new CSVFileReader(stream);
         ArrayList rows = cvsFile.readLines();
         float[] signal = new float[rows.size()];
         for (int i = 0; i < rows.size(); i++) {

@@ -24,6 +24,7 @@ public class ECGBluetoothReader {
 
     private static final String TAG = "ECGBluetoothReader";
     private static final short SYNC_START = (short) 0xaaaa;
+    private static final int BUFFER_SIZE = 1024*2;
 
     private OnBluetoothDataReceiver mDelegate;
 
@@ -39,7 +40,7 @@ public class ECGBluetoothReader {
     private byte[] mData = new byte[256];
     private byte[] mSyncEnd = new byte[1];
 
-    private float[] mECGData = new float[1024];
+    private float[] mECGData = new float[BUFFER_SIZE];
     private float[] mHRVData = new float[64];
 
     ByteBuffer syncStartBuffer = ByteBuffer.wrap(mSyncStart).order(ByteOrder.LITTLE_ENDIAN);
@@ -112,8 +113,8 @@ public class ECGBluetoothReader {
                 int length = (int) dataBuffer.get();
                 int ecgValue = (int) dataBuffer.getShort();
                 Log.d(TAG, "ecg = " + ecgValue);
-                System.arraycopy(mECGData, 1, mECGData, 0, 1023);
-                mECGData[1023] = (float) ecgValue * -1;
+                System.arraycopy(mECGData, 1, mECGData, 0, BUFFER_SIZE-1);
+                mECGData[BUFFER_SIZE-1] = (float) ecgValue * -1;
                 mDelegate.onSetECGData(mECGData);
                 break;
             default:

@@ -12,19 +12,7 @@
         android:id="@+id/ecgChartViewSurfaceView"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_above="@+id/ecgChartViewSurfaceKaiserView" />
-
-    <softservernd.biolock.control.ECGChartSurfaceView
-        android:id="@+id/ecgChartViewSurfaceKaiserView"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
         android:layout_centerVertical="true" />
-
-    <softservernd.biolock.control.ECGChartSurfaceView
-        android:id="@+id/ecgChartViewSurfaceButterView"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_below="@+id/ecgChartViewSurfaceKaiserView" />
 
     <ImageView
         android:id="@+id/heartAnimationECGImageView"

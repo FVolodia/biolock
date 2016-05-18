@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import softservernd.biolock.tools.CSVFile;
+import softservernd.biolock.tools.CSVFileReader;
 
 
 /**
@@ -27,7 +27,7 @@ public class ECGClassifier {
         for (String file : layerFiles) {
             try {
                 InputStream stream = context.getAssets().open(file);
-                CSVFile cvsFile = new CSVFile(stream);
+                CSVFileReader cvsFile = new CSVFileReader(stream);
                 ArrayList rows = cvsFile.readLines();
 
                 // Create matrix for layer weights

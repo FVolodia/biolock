@@ -8,7 +8,7 @@ import org.junit.Test;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import softservernd.biolock.tools.CSVFile;
+import softservernd.biolock.tools.CSVFileReader;
 import softservernd.biolock.dnn.ECGClassifier;
 import softservernd.biolock.ecgtools.ECGTools;
 
@@ -47,7 +47,7 @@ public class ClassifierUnitTest extends InstrumentationTestCase {
 
     private float[] readSignal(Context context, String fileName) throws Exception {
         InputStream stream = context.getAssets().open(fileName);
-        CSVFile cvsFile = new CSVFile(stream);
+        CSVFileReader cvsFile = new CSVFileReader(stream);
         ArrayList rows = cvsFile.readLines();
         float[] signal = new float[rows.size()];
         for (int i = 0; i < rows.size(); i++) {
