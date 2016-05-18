@@ -65,22 +65,15 @@ public class CSVFile {
         return rows;
     }
 
-    public boolean writeLines(String lines) {
+    public boolean writeLine(String line) {
         if (mOutputStream == null)
             return false;
 
         try {
-            mOutputStream.write(lines.getBytes());
+            mOutputStream.write(line.getBytes());
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
             return false;
-        }
-        finally {
-            try {
-                mOutputStream.close();
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
-            }
         }
 
         return true;

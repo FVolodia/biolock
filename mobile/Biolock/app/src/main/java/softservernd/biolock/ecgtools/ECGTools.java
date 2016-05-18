@@ -71,11 +71,11 @@ public class ECGTools {
             -0.023310};
 
 
-    public static float[] getFilteredSignal(float[] signal) {
+    public static float[] getFilteredSignal(float[] signal, int chunks) {
         float[] preprocessed = preprocess(signal);
         ECGPeaks peaks = detectRPeaks(preprocessed, mRPeakThreshold);
         List<float[]> segments = segment(preprocessed, peaks, mSegmentLength);
-        return calculate(segments);
+        return calculate(segments.subList(0, chunks));
     }
 
     public static float[] iirFilter(float[] signal) {
@@ -124,13 +124,8 @@ public class ECGTools {
     }
 
     public static float[] preprocess(float[] signal) {
-        float[] filtered = iirFilter(signal);
-        float[] filteredOld = filter(signal, b);
-
-        for (int i = 0; i < filtered.length; ++i) {
-            Log.e("Filtered", Float.toString(signal[i]) + " -> " + Float.toString(filtered[i]) + " Kaiser: " + Float.toString(filteredOld[i]));
-        }
-        return normalize(filteredOld);
+        float[] filtered = filter(signal, b);
+        return normalize(filtered);
     }
 
     public static ECGPeaks detectRPeaks(float[] signal, float threshold) {

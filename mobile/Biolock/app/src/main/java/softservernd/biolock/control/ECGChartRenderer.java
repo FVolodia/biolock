@@ -2,6 +2,7 @@ package softservernd.biolock.control;
 
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -136,8 +137,9 @@ class ECGSignalChart {
         int k = 0;
         for (int i = 1; i < CHART_POINT * 3; i = i + 3) {
             if (i < CHART_POINT * 3) {
-                mVertices[i] = mChartData[k];
-                k++;
+                mVertices[i] = mChartData[k++];
+                if (k >= mChartData.length)
+                    break;
             }
         }
     }

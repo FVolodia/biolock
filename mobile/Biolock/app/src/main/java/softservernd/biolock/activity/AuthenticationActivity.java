@@ -33,7 +33,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import softservernd.biolock.CustomApplication;
 import softservernd.biolock.R;
@@ -66,6 +70,7 @@ public class AuthenticationActivity extends AppCompatActivity
     private static ECGChartSurfaceView mECGKaiser;
     private static ECGChartSurfaceView mECGButter;
 
+    private File enrollmentFolder;
     private FileOutputStream mStreamECG;
 
     private int mHeartRate = -1;
@@ -209,6 +214,7 @@ public class AuthenticationActivity extends AppCompatActivity
     @Override
     public void onNewECGData(float[] data) {
         mEcgChart.setChartData(data);
+
         float[] kaiser = ECGTools.filter(data, ECGTools.b);
         mECGKaiser.setChartData(kaiser);
 
@@ -216,6 +222,12 @@ public class AuthenticationActivity extends AppCompatActivity
         mECGButter.setChartData(butter);
 
         mBuffer = data.clone();
+
+        if (mStreamECG != null) {
+            float[] signal = ECGTools.getFilteredSignal(mBuffer, 10);
+            CSVFile file = new CSVFile(mStreamECG);
+            file.writeLine(Arrays.toString(signal));
+        }
     }
 
     @Override
@@ -270,27 +282,22 @@ public class AuthenticationActivity extends AppCompatActivity
     }
 
     private void initFiles() {
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
         File rootF = new File(Environment.getExternalStorageDirectory(), "Biolock");
-        rootF.mkdir();
-        File rootFolder = new File(rootF, df.format(new Date()));
-        File folderECG = new File(Environment.getExternalStorageDirectory(), "Biolock ECG");
-        rootFolder.mkdir();
-
-//        mEcgFile mEcgFile= new File(rootFolder, df.format(new Date()) + "_ecg.bin");
-//        try {
-//            mEcgFile.createNewFile();
-//            mStreamECG = new FileOutputStream(mEcgFile);
-//        } catch (IOException e) {
-//            Log.e(TAG, "error during initing files. " + e);
-//        }
+        if (rootF.mkdir()) {
+            Log.i(TAG, rootF.getName() + " created");
+        }
+        enrollmentFolder = new File(rootF, "Enrollment");
+        if (enrollmentFolder.mkdir()) {
+            Log.i(TAG, enrollmentFolder.getName() + " created");
+        }
     }
 
     private void closeFile() {
         try {
             if (mStreamECG != null) mStreamECG.close();
+            mStreamECG = null;
         } catch (IOException e) {
-//            Log.e(TAG, "Error during closing stream. " + e);
+            Log.e(TAG, "Error during closing stream. " + e);
         }
 
     }
@@ -313,7 +320,35 @@ public class AuthenticationActivity extends AppCompatActivity
         snackbar.setAction("Enrol", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: add custom logic for record
+
+                if (enrollmentFolder != null) {
+                    SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    File userFolder = new File(enrollmentFolder, df.format(new Date()));
+                    if (userFolder.mkdir()) {
+                        File ecgFile = new File(userFolder, df.format(new Date()) + "_ecg.csv");
+                        try {
+                            if (ecgFile.createNewFile()) {
+                                mStreamECG = new FileOutputStream(ecgFile);
+                                Timer tm = new Timer();
+                                tm.schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        Timer tm = new Timer();
+                                        tm.schedule(new TimerTask() {
+                                            @Override
+                                            public void run() {
+                                                closeFile();
+                                            }
+                                        }, 10000);
+                                    }
+                                }, 3000);
+                            }
+                        } catch (IOException e) {
+                            Log.e(TAG, "error during initializing files. " + e);
+                        }
+                    }
+                }
+
                 snackbar.dismiss();
             }
         });
@@ -334,7 +369,7 @@ public class AuthenticationActivity extends AppCompatActivity
                     mHandler.postDelayed(this, mDelay);
 
                     if (mBuffer != null) {
-                        float[] signal = ECGTools.getFilteredSignal(mBuffer);
+                        float[] signal = ECGTools.getFilteredSignal(mBuffer, 10);
                         if (signal != null) {
                             int result = mClassifier.predict(signal);
                             if (result == 1) {
